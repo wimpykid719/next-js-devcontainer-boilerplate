@@ -16,7 +16,7 @@
           "source.organizeImports.biome": "explicit"
         },
         "editor.formatOnSave": true,
-        "biome.lspBin": "/app/node_modules/@biomejs/biome/bin/biome"
+        "biome.lspBin": "/workspace/app/node_modules/@biomejs/biome/bin/biome"
       },
       "extensions": [
         "biomejs.biome",
