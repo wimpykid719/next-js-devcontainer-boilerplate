@@ -36,6 +36,21 @@ Inside the container:
 cd app && pnpm dev
 ```
 
+### 5. Biome Settings
+Because our repository setup removes or ignores the .gitignore in app/, we must delete the corresponding configuration block in the default Next.js biome.json.
+
+If this setting is not deleted, a ".gitignore not found" error occurs, causing formatting (likely) to fall back to the editor's extension settings instead of using Biome.
+```
+// delete this line
+{
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  }
+}
+```
+
 Now you can access the app at 👉 http://localhost:3000.
 
 ## 📂 Project Structure

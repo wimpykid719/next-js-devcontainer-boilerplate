@@ -15,8 +15,15 @@
           "source.fixAll.biome": "explicit",
           "source.organizeImports.biome": "explicit"
         },
+        "editor.indentSize": 2,
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "editor.detectIndentation": false,
         "editor.formatOnSave": true,
-        "biome.lspBin": "/workspace/app/node_modules/@biomejs/biome/bin/biome"
+        "biome.lsp.Bin": "/workspace/app/node_modules/@biomejs/biome/bin/biome",
+        "biome.requireConfiguration": true,
+        "biome.configurationPath": "/workspace/app/biome.json",
+        "biome.lsp.trace.server": "verbose"
       },
       "extensions": [
         "biomejs.biome",
@@ -26,8 +33,6 @@
       ]
     }
   },
-  "forwardPorts": [
-    3000
-  ],
+  "forwardPorts": [3000],
   "remoteUser": "appuser"
 }
