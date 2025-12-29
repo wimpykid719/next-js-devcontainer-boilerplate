@@ -33,3 +33,44 @@ source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # プロンプトカスタマイズ
 PROMPT='%B%F{031}%n@%m%f%b : %F{032}%~%f%F{cyan}$vcs_info_msg_0_%f%F{037}🌙 >%f '
+
+# npm/npx の使用を確認付きで制限（サプライチェーン攻撃対策）
+npm() {
+  # 非対話 or 明示許可なら確認なしで通す
+  if [ -n "${USE_NPM_ANYWAY:-}" ] || [ ! -t 0 ]; then
+    command npm "$@"
+    return
+  fi
+  printf "⚠️ pnpm を推奨しています。\n"
+  printf "本当に npm を実行しますか？ [y/N] "
+  IFS= read -r ans || { echo; return 1; }
+  case "$ans" in
+    y|Y|yes|YES)
+      command npm "$@"
+      ;;
+    *)
+      echo "中止しました。"
+      return 1
+      ;;
+  esac
+}
+
+npx() {
+  # 非対話 or 明示許可なら確認なしで通す
+  if [ -n "${USE_NPM_ANYWAY:-}" ] || [ ! -t 0 ]; then
+    command npx "$@"
+    return
+  fi
+  printf "⚠️ pnpm dlx を推奨します。\n"
+  printf "本当に npx を実行しますか？ [y/N] "
+  IFS= read -r ans || { echo; return 1; }
+  case "$ans" in
+    y|Y|yes|YES)
+      command npx "$@"
+      ;;
+    *)
+      echo "中止しました。代替例: pnpm dlx $*"
+      return 1
+      ;;
+  esac
+}

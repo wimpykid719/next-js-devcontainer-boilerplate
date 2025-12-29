@@ -10,7 +10,7 @@
   "customizations": {
     "vscode": {
       "settings": {
-        "editor.defaultFormatter": "biomejs.biome",
+		    "editor.defaultFormatter": "biomejs.biome",
         "editor.codeActionsOnSave": {
           "source.fixAll.biome": "explicit",
           "source.organizeImports.biome": "explicit"
@@ -20,7 +20,7 @@
         "editor.insertSpaces": true,
         "editor.detectIndentation": false,
         "editor.formatOnSave": true,
-        "biome.lsp.Bin": "/workspace/app/node_modules/@biomejs/biome/bin/biome",
+        "biome.lsp.bin": "/workspace/app/node_modules/.bin/biome",
         "biome.requireConfiguration": true,
         "biome.configurationPath": "/workspace/app/biome.json",
         "biome.lsp.trace.server": "verbose"
