@@ -60,6 +60,13 @@ else
     cp .devcontainer/.npmpackagejsonlintrc.json /workspace/app/.npmpackagejsonlintrc.json 2>/dev/null || true
     cp .devcontainer/pnpm-workspace.yaml /workspace/app/pnpm-workspace.yaml 2>/dev/null || true
   fi
+  # node_modulesが存在しない場合は依存関係をインストール
+  if [ ! -d "/workspace/app/node_modules" ]; then
+    echo "node_modules not found, installing dependencies..."
+    cd /workspace/app || exit 1
+    pnpm install || echo "Warning: Failed to install dependencies"
+    cd /workspace || exit 1
+  fi
 fi
 
 cat .devcontainer/.zshrc >> ~/.zshrc
