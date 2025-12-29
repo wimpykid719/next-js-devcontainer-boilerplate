@@ -30,6 +30,11 @@ RUN apt-get update \
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 COPY --chown=appuser:appuser . /workspace
+
+# Cursor MCP設定をコピー
+RUN mkdir -p /home/appuser/.cursor
+COPY --chown=appuser:appuser mcp.json /home/appuser/.cursor/mcp.json
+
 RUN ln -sf /bin/zsh /bin/sh
 RUN usermod -s /bin/zsh appuser
 USER appuser
