@@ -37,6 +37,9 @@ Inside the container:
 cd app && pnpm dev
 ```
 
+Now you can access the app at 👉 http://localhost:3000.
+
+
 ### 5. Biome Settings
 Because our repository setup removes or ignores the .gitignore in app/, we must delete the corresponding configuration block in the default Next.js biome.json.
 
@@ -52,7 +55,11 @@ If this setting is not deleted, a ".gitignore not found" error occurs, causing f
 }
 ```
 
-Now you can access the app at 👉 http://localhost:3000.
+On first launch, Biome cannot reference the Biome installed in node_modules, causing an error. To resolve this, press Ctrl+Shift+P to open the command palette and execute the following command:
+
+```
+>Biome: Restart
+```
 
 ## 🛡️ Supply Chain Attack Protection
 
