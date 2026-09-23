@@ -2,9 +2,9 @@
 
 Ready-to-use **Next.js** development and production setup featuring:
 
-- 🐳 **Multi-stage Docker build**: Zsh-powered dev environment + lightweight production image
+- 🐳 **Devcontainer**: Zsh-powered development image pinned to Node.js 24.21
 - 📦 **pnpm** via Corepack
-- 🖥️ **Zsh with autosuggestions & persistent history** for smooth CLI workflows
+- 🖥️ **Zsh with autosuggestions**. Shell history lives in the container and resets when the container is removed
 - 🛠 **Biome** as formatter & linter with Git integration for consistent commits
 - 🎨 **Tailwind CSS** support with preinstalled VS Code extension
 - 🔧 **Devcontainer configuration** for a reproducible and portable workspace
@@ -39,8 +39,25 @@ cd app && pnpm dev
 
 Now you can access the app at 👉 http://localhost:3000.
 
+`pnpm dev` uses Next.js with Turbopack (port 3000). `pnpm dev:vinext` runs the same app on Vite for Cloudflare Workers (port 3001).
 
-### 5. Biome Settings
+
+### 5. Deploy
+
+The first container create installs both targets into `app/`. `next build` stays the Vercel build. vinext is added beside it and does not replace `pnpm dev`.
+
+Set tokens in `.devcontainer/.env` before deploying from the container. Create a Cloudflare API token with the **Edit Cloudflare Workers** template.
+
+```zsh
+cd app
+pnpm deploy:vercel
+pnpm deploy:cf
+```
+
+`deploy:cf` runs the `deploy:vinext` script that `vinext init` adds. Wrangler’s local server uses port 8787.
+
+
+### 6. Biome Settings
 Because our repository setup removes or ignores the .gitignore in app/, we must delete the corresponding configuration block in the default Next.js biome.json.
 
 If this setting is not deleted, a ".gitignore not found" error occurs, causing formatting (likely) to fall back to the editor's extension settings instead of using Biome.
@@ -92,15 +109,16 @@ Root-level configuration:
 .
 ├── .devcontainer/      # Devcontainer configs, Dockerfile & environment settings
 │   ├── .env.sample
+│   ├── .npmrc
+│   ├── .npmpackagejsonlintrc.json
 │   ├── .zshrc
-│   ├── app/            # Template files for Next.js app initialization
-│   │   ├── .npmrc
-│   │   ├── .npmpackagejsonlintrc.json
-│   │   └── pnpm-workspace.yaml
+│   ├── pnpm-workspace.yaml
+│   ├── .dockerignore
 │   ├── compose.yml
 │   ├── devcontainer.json
 │   ├── Dockerfile
-│   └── entrypoint.sh
+│   ├── entrypoint.sh
+│   └── mcp.json        # Copied to ~/.cursor/mcp.json in the image
 ├── .gitignore          # Git ignore file
 ├── app/                # Next.js application source code
 │   ├── public/         # Static assets
@@ -116,9 +134,9 @@ Consistent development environment with Docker & Dev Containers
 
 Opinionated setup with Biome + TailwindCSS out-of-the-box
 
-Zsh shell with history persistence for productivity
+Zsh shell for the life of the container
 
-Production-ready build optimized for deployment
+Deploy the same Next.js app to Vercel or Cloudflare Workers
 
 ## 📜 License
 MIT

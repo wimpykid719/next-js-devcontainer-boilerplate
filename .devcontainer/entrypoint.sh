@@ -50,6 +50,35 @@ if [ ! -f "/workspace/app/package.json" ]; then
     pkg.scripts['lint:package-json'] = 'pnpm exec npmPkgJsonLint .';
     fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
   " || echo "Warning: Failed to add lint:package-json script to package.json"
+
+  # Vercel CLI。next build / next start はそのまま Vercel 向け
+  echo "Installing Vercel CLI..."
+  pnpm add -D vercel@59.23.2 || echo "Warning: Failed to install Vercel CLI"
+
+  # Cloudflare Workers。vinext は next dev を残したまま追加する
+  # キャッシュと画像最適化は無効。KV や Cloudflare Images は後から wrangler.jsonc で足す
+  echo "Initializing Cloudflare Workers support..."
+  pnpm dlx vinext@1.0.0-beta.10 init \
+    --platform=cloudflare \
+    --skip-check \
+    --cdn-cache=none \
+    --data-cache=none \
+    --image-optimization=none \
+    --no-prerender \
+    || echo "Warning: Failed to initialize vinext"
+
+  node -e "
+    const fs = require('fs');
+    const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+    if (!pkg.scripts) pkg.scripts = {};
+    pkg.scripts['deploy:vercel'] = 'vercel --prod';
+    if (!pkg.scripts['deploy:cf']) {
+      pkg.scripts['deploy:cf'] = pkg.scripts['deploy:vinext']
+        ? 'pnpm run deploy:vinext'
+        : 'pnpm exec vinext-cloudflare deploy';
+    }
+    fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+  " || echo "Warning: Failed to add deploy scripts to package.json"
   cd /workspace || exit 1
 else
   echo "package.json found, skipping Next.js project initialization."
@@ -68,9 +97,3 @@ else
     cd /workspace || exit 1
   fi
 fi
-
-cat .devcontainer/.zshrc >> ~/.zshrc
-zsh && source ~/.zshrc
-
-# # シェルを起動してコンテナが終了しないようにする
-exec "$@"

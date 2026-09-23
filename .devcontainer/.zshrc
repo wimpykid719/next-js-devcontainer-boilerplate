@@ -11,7 +11,6 @@ precmd () { vcs_info }
 # completion
 zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}'
 zstyle ':completion:*' menu select
-fpath=($HOMEBREW_DIR/share/zsh/site-functions $fpath)
 autoload -U compinit
 compinit -u
 

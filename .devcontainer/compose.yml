@@ -2,17 +2,24 @@ services:
   nextjs:
     environment:
       COREPACK_ENABLE_DOWNLOAD_PROMPT: 0
+      NEXT_TELEMETRY_DISABLED: 1
       GIT_USER_NAME: ${GIT_USER_NAME}
       GIT_USER_EMAIL: ${GIT_USER_EMAIL}
+      VERCEL_TOKEN: ${VERCEL_TOKEN:-}
+      VERCEL_ORG_ID: ${VERCEL_ORG_ID:-}
+      VERCEL_PROJECT_ID: ${VERCEL_PROJECT_ID:-}
+      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN:-}
+      CLOUDFLARE_ACCOUNT_ID: ${CLOUDFLARE_ACCOUNT_ID:-}
     build:
       context: .
       dockerfile: Dockerfile
-      target: dev
     working_dir: /workspace
     volumes:
-      - ..:/workspace:cached
+      - ..:/workspace
     ports:
       - "3000:3000"
+      - "3001:3001"
+      - "8787:8787"
     stop_signal: SIGINT
     stdin_open: true
     tty: true

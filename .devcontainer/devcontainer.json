@@ -3,6 +3,12 @@
   "dockerComposeFile": "compose.yml",
   "service": "nextjs",
   "workspaceFolder": "/workspace",
+  "updateRemoteUserUID": true,
+  "remoteUser": "appuser",
+  "remoteEnv": {
+    "NEXT_TELEMETRY_DISABLED": "1",
+    "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0"
+  },
   "onCreateCommand": {
     "setup-git": "git config --global user.name \"$GIT_USER_NAME\" && git config --global user.email \"$GIT_USER_EMAIL\""
   },
@@ -10,7 +16,8 @@
   "customizations": {
     "vscode": {
       "settings": {
-		    "editor.defaultFormatter": "biomejs.biome",
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "editor.defaultFormatter": "biomejs.biome",
         "editor.codeActionsOnSave": {
           "source.fixAll.biome": "explicit",
           "source.organizeImports.biome": "explicit"
@@ -23,16 +30,31 @@
         "biome.lsp.bin": "/workspace/app/node_modules/.bin/biome",
         "biome.requireConfiguration": true,
         "biome.configurationPath": "/workspace/app/biome.json",
-        "biome.lsp.trace.server": "verbose"
+        "biome.lsp.trace.server": "off"
       },
       "extensions": [
         "biomejs.biome",
         "bradlc.vscode-tailwindcss",
         "eamodio.gitlens",
-        "shardulm94.trailing-spaces"
+        "shardulm94.trailing-spaces",
+        "usernamehw.errorlens",
+        "mikestead.dotenv"
       ]
     }
   },
-  "forwardPorts": [3000],
-  "remoteUser": "appuser"
+  "forwardPorts": [3000, 3001, 8787],
+  "portsAttributes": {
+    "3000": {
+      "label": "Next.js",
+      "onAutoForward": "notify"
+    },
+    "3001": {
+      "label": "vinext",
+      "onAutoForward": "silent"
+    },
+    "8787": {
+      "label": "Wrangler",
+      "onAutoForward": "silent"
+    }
+  }
 }

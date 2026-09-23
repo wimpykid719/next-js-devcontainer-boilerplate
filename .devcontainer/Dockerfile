@@ -1,13 +1,16 @@
-FROM node:24-slim AS dev
+FROM node:24.21-trixie-slim
 
 WORKDIR /workspace
-ARG APP_NAME
+ARG PNPM_VERSION=12.5.1
 ENV PYTHONUNBUFFERED=1
 ENV LANG=ja_JP.UTF-8
 ENV LANGUAGE=ja_JP:ja
 ENV LC_ALL=ja_JP.UTF-8
 ENV TERM=xterm-256color
 ENV COLORTERM=truecolor
+ENV SHELL=/bin/zsh
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 
 RUN apt-get update \
     && apt-get install -y \
@@ -26,34 +29,18 @@ RUN apt-get update \
     && locale-gen \
     && useradd -m appuser
 
-# pnpm セットアップ
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 
-COPY --chown=appuser:appuser . /workspace
+COPY --chown=appuser:appuser .zshrc /home/appuser/.zshrc
 
 # Cursor MCP設定をコピー
 RUN mkdir -p /home/appuser/.cursor
 COPY --chown=appuser:appuser mcp.json /home/appuser/.cursor/mcp.json
 
-RUN ln -sf /bin/zsh /bin/sh
 RUN usermod -s /bin/zsh appuser
 USER appuser
 
-# zsh用コマンド保管インストール
-RUN git clone https://github.com/zsh-users/zsh-autosuggestions /home/appuser/.zsh/zsh-autosuggestions
+# zsh-autosuggestions v0.7.1
+RUN git clone --depth 1 --branch v0.7.1 https://github.com/zsh-users/zsh-autosuggestions.git /home/appuser/.zsh/zsh-autosuggestions
 
-FROM node:24-slim AS prod
-
-WORKDIR /workspace
-
-# pnpm セットアップ（本番も必要）
-RUN corepack enable && corepack prepare pnpm@latest --activate
-
-# dev ステージから node_modules とビルド成果物をコピー
-COPY --from=dev /workspace/package.json /workspace/pnpm-lock.yaml ./
-COPY --from=dev /workspace/node_modules ./node_modules
-COPY --from=dev /workspace/.next ./.next
-COPY --from=dev /workspace/public ./public
-
-EXPOSE 3000
-CMD ["pnpm", "start"]
+CMD ["sleep", "infinity"]
